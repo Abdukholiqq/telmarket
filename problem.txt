@@ -1,0 +1,5 @@
+1 .  user.controllerda error ni ushlashda muammo bor
+2 .  product qo'shayotganda asosiy rasm file da
+        qolganlari files dan keladi
+3.   Product ni update qilishda ozgina muammo bor
+
