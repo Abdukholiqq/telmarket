@@ -1,11 +1,13 @@
-import UserController from "../controller/user.controller";
 import { Router } from "express";
+import UserController from "../controller/user.controller";
+import { chackTokenMiddleware } from "../../../utils/chackToken";
+
 
 const router = Router()
 
-router.get('/', UserController.GetUser)
+router.get('/', chackTokenMiddleware, UserController.GetUser)
 router.post('/register', UserController.CreateUser)
 router.post('/login', UserController.SigninUser) 
-router.put('/', UserController.UpdateUser) 
+router.put('/', chackTokenMiddleware, UserController.UpdateUser) 
 
 export default {router}

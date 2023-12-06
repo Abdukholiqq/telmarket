@@ -1,9 +1,12 @@
 import { Request, Response } from "express";
 import { resolve } from "path";
-import jwt from "../../../utils/jwt";
 import ProductModel from "../model/product.model";
 import CategoryModel from "../../category/model/category.model";
 import { ProductBody } from "../../types";
+import { JwtPayload } from "jsonwebtoken";
+interface CustomRequest extends Request {
+  token?: JwtPayload;
+}
 
 const getAllProducts = async (req: Request, res: Response) => {
   try {
@@ -24,18 +27,20 @@ const getAllProducts = async (req: Request, res: Response) => {
 
 const getProductById = async (req: Request, res: Response) => {
   try {
-    const id = req.params.id;
-
-    const product = await ProductModel.findAll({
+    const id = req.params.id; 
+    const chackproduct = await ProductModel.findAll({
       where: { id },
-    });
-
-    if (product.length === 0) {
+    }); 
+    if (chackproduct.length === 0) {
       return res.status(404).json({
         status: 404,
         message: "Product not found",
       });
     }
+    await ProductModel.update({show: chackproduct[0].dataValues.show + 1},{where: {id}})
+    const product = await ProductModel.findAll({
+      where: { id },
+    });
     return res.status(200).json({
       status: 200,
       message: "success",
@@ -49,36 +54,39 @@ const getProductById = async (req: Request, res: Response) => {
     });
   }
 };
-const search =async (req:Request, res: Response) => {  
-   
-  const Products = await ProductModel.findAll()
-    if (req.query.name) {
-     let name = (req.query.name as string).toLowerCase()
-        const matched = Products.filter(product => product.productName.toLowerCase().includes(name));
-       return res.status(200).json({
-          message: 'success',
-          data: matched
-        })
-    } 
-    return res.status(200).json({
-      message: 'success',
-      data: Products
-    })
- 
-}
-
-const createProduct = async (req: Request, res: Response) => {
+const search = async (req: Request, res: Response) => {
   try {
-    const authHeader = req.headers["authorization"];
-    const access_token = authHeader && authHeader.split(" ")[1];
-
-    const files: any = req.files?.files;
-
+    const Products = await ProductModel.findAll();
+    if (req.query.name) {
+      let name = (req.query.name as string).toLowerCase();
+      const matched = Products.filter((product) =>
+        product.productName.toLowerCase().includes(name)
+      );
+      return res.status(200).json({
+        message: "success",
+        data: matched,
+      });
+    }
+    return res.status(200).json({
+      message: "success",
+      data: Products,
+    });
+  } catch (error: any) {
+    console.log(error.message);
+    res.status(500).json({
+      status: 500,
+      message: "Internal Server Error",
+    });
+  }
+};
+const createProduct = async (req: CustomRequest, res: Response) => {
+  try {
+    const fileFront: any = req.files?.fileFront;
+    const fileBack: any = req.files?.fileBack;
     const data: ProductBody = req.body;
     let { model } = data;
 
-    const chekToken: any = jwt.verify(access_token);
-    if (!chekToken?.isAdmin) {
+    if (!req.token?.isAdmin) {
       return res.status(404).json({
         status: 404,
         message: "Your not admin",
@@ -98,19 +106,21 @@ const createProduct = async (req: Request, res: Response) => {
     }
     let categoryId = category[0].id;
 
-    for (let i = 0; i < files?.length; i++) {
-      var { name } = files[i];
-    }
+    console.log(req.files, "files");
 
-    const extFile = name.replace(".", "");
+    const extFile = fileFront.name.replace(".", "");
     const extPattern = /(jpg|jpeg|webp|png|gif|svg)/gi.test(extFile);
     if (!extPattern) throw new TypeError("Image format is not valid");
 
-    let file1 = Date.now() + "-1-" + files[0].name.replace(/\s/g, "");
-    let file2 = Date.now() + "-2-" + files[1].name.replace(/\s/g, "");
+    const extFile2 = fileBack.name.replace(".", "");
+    const extPattern2 = /(jpg|jpeg|webp|png|gif|svg)/gi.test(extFile2);
+    if (!extPattern2) throw new TypeError("Image format is not valid");
 
-    files[0].mv(resolve("src", "uploads", file1));
-    files[1].mv(resolve("src", "uploads", file2));
+    let file1 = Date.now() + "-" + fileFront.name.replace(/\s/g, "");
+    let file2 = Date.now() + "-" + fileBack.name.replace(/\s/g, "");
+
+    fileFront.mv(resolve("src", "uploads", file1));
+    fileBack.mv(resolve("src", "uploads", file2));
 
     const newProduct = await ProductModel.create({
       ...data,
@@ -133,13 +143,10 @@ const createProduct = async (req: Request, res: Response) => {
   }
 };
 
-const updateProduct = async (req: Request, res: Response) => {
+const updateProduct = async (req: CustomRequest, res: Response) => {
   try {
-    const authHeader = req.headers["authorization"];
-    const access_token = authHeader && authHeader.split(" ")[1];
-
-    const files: any = req.files?.files;
-    // const file: any = req.files?.file;
+    const fileFront: any = req.files?.fileFront;
+    const fileBack: any = req.files?.fileBack;
     const id = req.params.id;
     const data: ProductBody = req.body;
     let {
@@ -168,8 +175,7 @@ const updateProduct = async (req: Request, res: Response) => {
       description,
     } = data;
 
-    const chekToken: any = jwt.verify(access_token);
-    if (!chekToken?.isAdmin) {
+    if (!req.token?.isAdmin) {
       return res.status(404).json({
         status: 404,
         message: "Your not admin",
@@ -190,26 +196,21 @@ const updateProduct = async (req: Request, res: Response) => {
 
     //@ts-ignore
     let file1, file2;
-    if (files) {
-      for (var i = 0; i < files.length; i++) {
-        var { mv, name } = files[i];
-      }
-      let filename1 = await files[0];
-      let filename2 = await files[1];
-
-      const extFile = name.replace(".", "");
+    if (fileFront) {
+      const extFile = fileFront.name.replace(".", "");
       const extPattern = /(jpg|webp|jpeg|png|gif|svg)/gi.test(extFile);
       if (!extPattern) throw new TypeError("Image format is not valid");
-
-      file1 = Date.now() + "-2-" + filename1.name.replace(/\s/g, "");
-      file2 = Date.now() + "-3-" + filename2.name.replace(/\s/g, "");
-
-      mv(resolve("src", "uploads", file1));
-      mv(resolve("src", "uploads", file2));
+      file1 = Date.now() + "-" + fileFront.name.replace(/\s/g, "");
+      fileFront.mv(resolve("src", "uploads", file1));
     }
-    //////////////////////////////////////////
+    if (fileBack) {
+      const extFile = fileBack.name.replace(".", "");
+      const extPattern = /(jpg|webp|jpeg|png|gif|svg)/gi.test(extFile);
+      if (!extPattern) throw new TypeError("Image format is not valid");
+      file1 = Date.now() + "-" + fileBack.name.replace(/\s/g, "");
+      fileBack.mv(resolve("src", "uploads", file1));
+    }
     const product: any = await ProductModel.findAll({ where: { id } });
-    console.log(product);
 
     if (!product) {
       return res.status(404).json({
@@ -272,14 +273,11 @@ const updateProduct = async (req: Request, res: Response) => {
   }
 };
 
-const deleteProduct = async (req: Request, res: Response) => {
+const deleteProduct = async (req: CustomRequest, res: Response) => {
   try {
-    const authHeader = req.headers["authorization"];
-    const access_token = authHeader && authHeader.split(" ")[1];
     const id = req.params.id;
 
-    const chekToken: any = jwt.verify(access_token);
-    if (!chekToken?.isAdmin) {
+    if (!req.token?.isAdmin) {
       return res.status(404).json({
         status: 404,
         message: "Your not admin",

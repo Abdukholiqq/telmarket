@@ -1,0 +1,1303 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "1.0.0",
+        "title": "Welcome to my Market",
+        "description": "This is site sold out phones",
+        "license": {
+            "name": "API",
+            "url": "http://localhost:4000/api"
+        }
+    },
+    "securityDefinitions": {
+        "BearerAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header",
+            "bearerFormat": "JWT"
+        }
+    },
+    "host": "localhost:4000/api",
+    "basePath": "",
+    "tags": [
+        {
+            "name": "Admin",
+            "description": "Get all your data"
+        },
+        {
+            "name": "User",
+            "description": "Get all your data"
+        },
+        {
+            "name": "Products",
+            "description": "Get all Products for Users"
+        },
+        {
+            "name": "Products for Admin",
+            "description": "Get all Products for Admin"
+        },
+        {
+            "name": "Category",
+            "description": "Get all Category"
+        },
+        {
+            "name": "Category for Admin",
+            "description": "Get all Category for Admin"
+        },
+        {
+            "name": "Orders",
+            "description": "Get all your Orders"
+        },
+        {
+            "name": "Orders for Admin",
+            "description": "Get all your Orders"
+        }
+    ],
+    "schemes": ["http", "https"],
+    "consumes": ["application/json", "multipart/form-data"],
+    "produces": ["application/json", "multipart/form-data"],
+    "paths": {
+        "/admin": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "tags": ["Admin"],
+                "summary": "Get admin data",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/Admin"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "tags": ["Admin"],
+                "summary": "Get admin data",
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "username",
+                        "type": "string",
+                        "description": "Your new username"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "lastname",
+                        "type": "string",
+                        "description": "Your new lastname"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "password",
+                        "type": "string",
+                        "required": true,
+                        "description": "Your new password"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "newPassword",
+                        "type": "string",
+                        "description": "Your new new Password"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "file",
+                        "type": "file",
+                        "description": "Your new Profile image"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/Admin"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/register": {
+            "post": {
+                "tags": ["Admin"],
+                "summary": "Get admin data",
+                "consumes": ["multipart/form-data"],
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "username",
+                        "type": "string",
+                        "required": true,
+                        "description": "Username of the admin"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "lastname",
+                        "type": "string",
+                        "required": true,
+                        "description": "Last name of the admin"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "password",
+                        "type": "string",
+                        "required": true,
+                        "description": "Password of the admin"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "file",
+                        "type": "file",
+                        "required": true,
+                        "description": "OK"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "New admin added",
+                        "schema": {
+                            "$ref": "#/definitions/Admin"
+                        }
+                    },
+                    "400": {
+                        "description": "Failed. Bad post data."
+                    },
+                    "404": {
+                        "description": "Failed. Product not found"
+                    }
+                }
+            }
+        },
+        "/admin/login": {
+            "post": {
+                "tags": ["Admin"],
+                "summary": "Get admin data",
+                "consumes": ["multipart/form-data"],
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "username",
+                        "type": "string",
+                        "required": true,
+                        "description": "Username of the admin"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "password",
+                        "type": "string",
+                        "required": true,
+                        "description": "Password of the admin"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Succcessfully",
+                        "schema": {
+                            "$ref": "#/definitions/Admin"
+                        }
+                    },
+                    "400": {
+                        "description": "Failed. Bad post data."
+                    },
+                    "404": {
+                        "description": "Failed. Product not found"
+                    }
+                }
+            }
+        },
+        "/users": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "tags": ["User"],
+                "summary": "Get user data",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/User"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "tags": ["User"],
+                "summary": "Get user data",
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "username",
+                        "type": "string",
+                        "description": "Your new username"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "lastname",
+                        "type": "string",
+                        "description": "Your new lastname"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "password",
+                        "type": "string",
+                        "required": true,
+                        "description": "Your new password"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "newPassword",
+                        "type": "string",
+                        "description": "Your new new Password"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "file",
+                        "type": "file",
+                        "description": "Your new Profile image"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/User"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/register": {
+            "post": {
+                "tags": ["User"],
+                "summary": "Get user data",
+                "consumes": ["multipart/form-data"],
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "username",
+                        "type": "string",
+                        "required": true,
+                        "description": "Username of the admin"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "lastname",
+                        "type": "string",
+                        "required": true,
+                        "description": "Last name of the admin"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "password",
+                        "type": "string",
+                        "required": true,
+                        "description": "Password of the admin"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "file",
+                        "type": "file",
+                        "required": true,
+                        "description": "OK"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "New admin added",
+                        "schema": {
+                            "$ref": "#/definitions/Admin"
+                        }
+                    },
+                    "400": {
+                        "description": "Failed. Bad post data."
+                    },
+                    "404": {
+                        "description": "Failed. Product not found"
+                    }
+                }
+            }
+        },
+        "/users/login": {
+            "post": {
+                "tags": ["User"],
+                "summary": "Get user data",
+                "consumes": ["multipart/form-data"],
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "username",
+                        "type": "string",
+                        "required": true,
+                        "description": "Username of the user"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "password",
+                        "type": "string",
+                        "required": true,
+                        "description": "Password of the user"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "New user added",
+                        "schema": {
+                            "$ref": "#/definitions/User"
+                        }
+                    },
+                    "400": {
+                        "description": "Failed. Bad post data."
+                    },
+                    "404": {
+                        "description": "Failed. Product not found"
+                    }
+                }
+            }
+        },
+        "/products": {
+            "get": {
+                "tags": ["Products", "Products for Admin"],
+                "summary": "Get all Products",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/Products"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "tags": ["Products for Admin"],
+                "summary": "Added new Product for Admin",
+                "consumes": ["multipart/form-data"],
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "productName",
+                        "type": "string",
+                        "required": true
+                    },
+                    {
+                        "in": "formData",
+                        "name": "model",
+                        "type": "string",
+                        "required": true
+                    },
+                    {
+                        "in": "formData",
+                        "name": "price",
+                        "type": "number",
+                        "required": true
+                    },
+                    {
+                        "in": "formData",
+                        "name": "color",
+                        "type": "string",
+                        "required": true
+                    },
+                    {
+                        "in": "formData",
+                        "name": "count",
+                        "type": "number",
+                        "required": true
+                    },
+                    {
+                        "in": "formData",
+                        "name": "nfc",
+                        "type": "string",
+                        "required": true
+                    },
+                    {
+                        "in": "formData",
+                        "name": "ekran_chastotasi",
+                        "type": "string",
+                        "required": true
+                    },
+                    {
+                        "in": "formData",
+                        "name": "protsessor",
+                        "type": "string",
+                        "required": true
+                    },
+                    {
+                        "in": "formData",
+                        "name": "old_kamera",
+                        "type": "string",
+                        "required": true
+                    },
+                    {
+                        "in": "formData",
+                        "name": "orqa_kamera",
+                        "type": "string",
+                        "required": true
+                    },
+                    {
+                        "in": "formData",
+                        "name": "sim_karta_formati",
+                        "type": "string",
+                        "required": true
+                    },
+                    {
+                        "in": "formData",
+                        "name": "sim_kartalar_soni",
+                        "type": "number",
+                        "required": true
+                    },
+                    {
+                        "in": "formData",
+                        "name": "operatsion_system_version",
+                        "type": "string",
+                        "required": true
+                    },
+                    {
+                        "in": "formData",
+                        "name": "aloqa_standarti",
+                        "type": "string",
+                        "required": true
+                    },
+                    {
+                        "in": "formData",
+                        "name": "bluetooth_standarti",
+                        "type": "string",
+                        "required": true
+                    },
+                    {
+                        "in": "formData",
+                        "name": "vazn",
+                        "type": "string",
+                        "required": true
+                    },
+                    {
+                        "in": "formData",
+                        "name": "batary_power",
+                        "type": "string",
+                        "required": true
+                    },
+                    {
+                        "in": "formData",
+                        "name": "ekran_nisbati",
+                        "type": "string",
+                        "required": true
+                    },
+                    {
+                        "in": "formData",
+                        "name": "ekran_texnologiyasi",
+                        "type": "string",
+                        "required": true
+                    },
+                    {
+                        "in": "formData",
+                        "name": "ekran_size",
+                        "type": "string",
+                        "required": true
+                    },
+                    {
+                        "in": "formData",
+                        "name": "doimiy_xotira",
+                        "type": "string",
+                        "required": true
+                    },
+                    {
+                        "in": "formData",
+                        "name": "operativ_xotira",
+                        "type": "string",
+                        "required": true
+                    },
+                    {
+                        "in": "formData",
+                        "name": "description",
+                        "type": "string",
+                        "required": true
+                    },
+                    {
+                        "in": "formData",
+                        "name": "fileFront",
+                        "type": "file",
+                        "required": true,
+                        "description": "Product front image"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "fileBack",
+                        "type": "file",
+                        "required": true,
+                        "description": "Product back image"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/Products"
+                        }
+                    }
+                }
+            }
+        },
+        "/products/{id}": {
+            "get": {
+                "tags": ["Products", "Products for Admin"],
+                "summary": "Get  Product by ID",
+                "produces": ["application/json"],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "type": "number",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/Product"
+                        }
+                    },
+                    "404": {
+                        "description": "Failed. Product not found"
+                    }
+                }
+            },
+            "patch": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "tags": ["Products for Admin"],
+                "summary": "Update selected product data for Admin",
+                "consumes": ["multipart/form-data"],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "type": "number",
+                        "description": "Write id selected product"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "productName",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "model",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "price",
+                        "type": "number"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "color",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "count",
+                        "type": "number"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "nfc",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "ekran_chastotasi",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "protsessor",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "old_kamera",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "orqa_kamera",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "sim_karta_formati",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "sim_kartalar_soni",
+                        "type": "number"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "operatsion_system_version",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "aloqa_standarti",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "bluetooth_standarti",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "vazn",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "batary_power",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "ekran_nisbati",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "ekran_texnologiyasi",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "ekran_size",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "doimiy_xotira",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "operativ_xotira",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "description",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "fileFront",
+                        "type": "file",
+                        "description": "Product front image"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "fileBack",
+                        "type": "file",
+                        "description": "Product back image"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Updated",
+                        "schema": {
+                            "$ref": "#/definitions/Product"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "tags": ["Products for Admin"],
+                "summary": "Delete selected Product for Admin",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "type": "number"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Product deleted",
+                        "schema": {
+                            "$ref": "#/definitions/id"
+                        }
+                    }
+                }
+            }
+        },
+        "/products/search/{name}": {
+            "get": {
+                "tags": ["Products", "Products for Admin"],
+                "summary": "Get  Products with product name",
+                "produces": ["application/json"],
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "name",
+                        "type": "string",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/Products"
+                        }
+                    },
+                    "404": {
+                        "description": "Failed. Product not found"
+                    }
+                }
+            }
+        },
+        "/category": {
+            "get": {
+                "tags": ["Category", "Category for Admin"],
+                "summary": "Get all Categories",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/Category"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "tags": ["Category for Admin"],
+                "summary": "Get all Categories",
+                "consumes": ["multipart/form-data"],
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "category_name",
+                        "type": "string",
+                        "required": true
+                    },
+                    {
+                        "in": "formData",
+                        "name": "file",
+                        "type": "file",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/Categories"
+                        }
+                    }
+                }
+            }
+        },
+        "/category/{id}": {
+            "get": {
+                "tags": ["Category", "Category for Admin"],
+                "summary": "Get Category by ID",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "type": "number",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/Category"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "tags": ["Category for Admin"],
+                "summary": "Update Category",
+                "consumes": ["multipart/form-data"],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "type": "number",
+                        "required": true
+                    },
+                    {
+                        "in": "formData",
+                        "name": "category_name",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "file",
+                        "type": "file"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Updated",
+                        "schema": {
+                            "$ref": "#/definitions/id"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "tags": ["Category for Admin"],
+                "summary": "delete Category",
+                "consumes": ["application/json"],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "type": "number",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Deleted",
+                        "schema": {
+                            "$ref": "#/definitions/id"
+                        }
+                    }
+                }
+            }
+        },
+        "/category/name/{name}": {
+            "get": {
+                "tags": ["Category", "Category for Admin"],
+                "summary": "Get Categories with category name",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "name",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/Category"
+                        }
+                    }
+                }
+            }
+        },
+        "/orders": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "tags": ["Orders"],
+                "summary": "Get all your Orders",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/Orders"
+                        }
+                    }
+                }
+            }
+        },
+        "/orders/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "tags": ["Orders"],
+                "summary": "Get Orders by ID",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "type": "number",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/Orders"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "tags": ["Orders"],
+                "summary": "Update Order with given ID",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "type": "number",
+                        "description": "OK"
+                    },
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "type": "object",
+                        "required": true,
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/Order"
+                        }
+                    }
+                ],
+                "produces": ["application/json"],
+                "responses": {
+                    "200": {
+                        "description": "New order was added",
+                        "schema": {
+                            "$ref": "#/definitions/id"
+                        }
+                    },
+                    "400": {
+                        "description": "Failed. Bad post data."
+                    },
+                    "404": {
+                        "description": "Failed. Product not found"
+                    }
+                }
+            }
+        },
+        "/orders/admin": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "tags": ["Orders for Admin"],
+                "summary": "Get all Orders for Admin",
+                "responses": {
+                    "200": {
+                        "description": "Succcessfully",
+                        "schema": {
+                            "$ref": "#/definitions/Orders"
+                        }
+                    }
+                }
+            }
+        },
+        "/orders/admin/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "tags": ["Orders for Admin"],
+                "summary": "Get Orders by ID for Admin",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "type": "number",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/Orders"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "tags": ["Orders for Admin"],
+                "summary": "Update Order status with given ID for Admin",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "type": "number",
+                        "description": "Order id"
+                    },
+                    {
+                        "name": "status",
+                        "in": "body",
+                        "type": "string",
+                        "required": true,
+                        "description": "Order status"
+                    }
+                ],
+                "produces": ["application/json"],
+                "responses": {
+                    "200": {
+                        "description": "Order was status updated",
+                        "schema": {
+                            "$ref": "#/definitions/id"
+                        }
+                    },
+                    "400": {
+                        "description": "Failed. Bad post data."
+                    },
+                    "404": {
+                        "description": "Failed. Product not found"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "id": {
+            "properties": {
+                "type": "string"
+            }
+        },
+        "Products": {
+            "type": "object",
+            "properties": {
+                "id": { "type": "string" },
+                "productName": { "type": "string" },
+                "model": { "type": "string" },
+                "price": { "type": "number" },
+                "color": { "type": "string" },
+                "count": { "type": "number" },
+                "nfc": { "type": "string" },
+                "ekran_chastotasi": { "type": "string" },
+                "protsessor": { "type": "string" },
+                "old_kamera": { "type": "string" },
+                "orqa_kamera": { "type": "string" },
+                "sim_karta_formati": { "type": "string" },
+                "sim_kartalar_soni": { "type": "number" },
+                "operatsion_system_version": { "type": "string" },
+                "aloqa_standarti": { "type": "string" },
+                "bluetooth_standarti": { "type": "string" },
+                "vazn": { "type": "string" },
+                "batary_power": { "type": "string" },
+                "ekran_nisbati": { "type": "string" },
+                "ekran_texnologiyasi": { "type": "string" },
+                "ekran_size": { "type": "string" },
+                "doimiy_xotira": { "type": "string" },
+                "operativ_xotira": { "type": "string" },
+                "description": { "type": "string" },
+                "show": { "type": "number" },
+                "sold_out": { "type": "number" },
+                "MainImage": { "type": "string" },
+                "BackImage": { "type": "string" },
+                "createdAt": { "type": "string" },
+                "updatedAt": { "type": "string" }
+            }
+        },
+        "Product": {
+            "type": "object",
+            "properties": {
+                "id": { "type": "string" },
+                "productName": { "type": "string" },
+                "model": { "type": "string" },
+                "price": { "type": "number" },
+                "color": { "type": "string" },
+                "count": { "type": "number" },
+                "nfc": { "type": "string" },
+                "ekran_chastotasi": { "type": "string" },
+                "protsessor": { "type": "string" },
+                "old_kamera": { "type": "string" },
+                "orqa_kamera": { "type": "string" },
+                "sim_karta_formati": { "type": "string" },
+                "sim_kartalar_soni": { "type": "number" },
+                "operatsion_system_version": { "type": "string" },
+                "aloqa_standarti": { "type": "string" },
+                "bluetooth_standarti": { "type": "string" },
+                "vazn": { "type": "string" },
+                "batary_power": { "type": "string" },
+                "ekran_nisbati": { "type": "string" },
+                "ekran_texnologiyasi": { "type": "string" },
+                "ekran_size": { "type": "string" },
+                "doimiy_xotira": { "type": "string" },
+                "operativ_xotira": { "type": "string" },
+                "description": { "type": "string" },
+                "show": { "type": "number" },
+                "sold_out": { "type": "number" },
+                "MainImage": { "type": "string" },
+                "BackImage": { "type": "string" },
+                "createdAt": { "type": "string" },
+                "updatedAt": { "type": "string" }
+            }
+        },
+        "Category": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "category_name": {
+                    "type": "string"
+                },
+                "category_image": {
+                    "type": "string"
+                },
+                "createdAt": { "type": "string" },
+                "updatedAt": { "type": "string" },
+                "ProductModels": {
+                    "$ref": "#/definitions/Products"
+                }
+            }
+        },
+        "Categories": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "category_name": {
+                    "type": "string"
+                },
+                "category_image": {
+                    "type": "string"
+                },
+                "createdAt": { "type": "string" },
+                "updatedAt": { "type": "string" }
+            }
+        },
+        "User": {
+            "type": "object",
+            "properties": {
+                "username": { "type": "string" },
+                "lastname": { "type": "string" },
+                "avatar": { "type": "string" },
+                "password": { "type": "string" },
+                "createdAt": { "type": "string" },
+                "updatedAt": { "type": "string" },
+                "token": { "type": "string" }
+            }
+        },
+        "Login": {
+            "type": "object",
+            "properties": {
+                "username": { "type": "string" },
+                "password": { "type": "string" }
+            }
+        },
+        "Orders": {
+            "type": "object",
+            "properties": {
+                "id": { "type": "number" },
+                "sold_count": { "type": "number" },
+                "product_price": { "type": "number" },
+                "username": { "type": "string" },
+                "phone_number": { "type": "string" },
+                "viloyat": { "type": "string" },
+                "tuman": { "type": "string" },
+                "yetkazish_narxi": { "type": "string" },
+                "aholi_punkti": { "type": "string" },
+                "manzil": { "type": "string" },
+                "moljal": { "type": "string" },
+                "description": { "type": "string" },
+                "createdAt": { "type": "string" },
+                "updatedAt": { "type": "string" },
+                "ProductModels": {
+                    "$ref": "#/definitions/Products"
+                },
+                "UserModels": {
+                    "$ref": "#/definitions/User"
+                }
+            }
+        },
+        "Order": {
+            "type": "object",
+            "properties": {
+                "sold_count": { "type": "number" },
+                "username": { "type": "string" },
+                "phone_number": { "type": "string" },
+                "viloyat": { "type": "string" },
+                "tuman": { "type": "string" },
+                "yetkazish_narxi": { "type": "string" },
+                "aholi_punkti": { "type": "string" },
+                "manzil": { "type": "string" },
+                "moljal": { "type": "string" },
+                "description": { "type": "string" },
+                "createdAt": { "type": "string" },
+                "updatedAt": { "type": "string" }
+            }
+        },
+        "Admin": {
+            "type": "object",
+            "properties": {
+                "username": { "type": "string" },
+                "lastname": { "type": "string" },
+                "avatar": { "type": "string" },
+                "password": { "type": "string" },
+                "createdAt": { "type": "string" },
+                "updatedAt": { "type": "string" },
+                "token": { "type": "string" }
+            }
+        }
+    }
+}

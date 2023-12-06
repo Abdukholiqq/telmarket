@@ -4,15 +4,17 @@ import bcrypt from "bcrypt";
 import jwt from "../../../utils/jwt";
 import { AdminRequestbody } from "../../types";
 import AdminModels from "../model/admin.model";
+import { JwtPayload } from "jsonwebtoken";
+interface CustomRequest extends Request {
+  token?: JwtPayload; 
+}
 
 const RegisterAdmin = async (req: Request, res: Response) => {
   try {
     const file: any = req.files?.file;
 
     const adminData: AdminRequestbody = req.body;
-    let username = adminData.username;
-    let lastname = adminData.lastname;
-    let password = adminData.password;
+    let {username, lastname, password} = adminData
 
     const admin: any = await AdminModels.findAll({ where: { username } });
     if (password.length < 8) {
@@ -63,20 +65,16 @@ const RegisterAdmin = async (req: Request, res: Response) => {
   }
 };
 
-const GetAdmin = async (req: Request, res: Response) => {
+const GetAdmin = async (req: CustomRequest, res: Response) => {
   try {
-    const authHeader = req.headers["authorization"];
-    const access_token = authHeader && authHeader.split(" ")[1];
-    const chekToken: any = jwt.verify(access_token);
-
-    if (!chekToken?.isAdmin) {
+    if (!req.token?.isAdmin) {
       return res.status(404).json({
         status: 404,
         message: "Your not admin",
       });
     }
     const admin: any = await AdminModels.findAll({
-      where: { id: chekToken.id },
+      where: { id: req.token.id },
     });
     if (!admin) {
       return res.status(402).json({
@@ -101,8 +99,7 @@ const SigninAdmin = async (req: Request, res: Response) => {
   try {
     /////
     const adminData: AdminRequestbody = req.body;
-    const username = adminData.username;
-    const password = adminData.password;
+     const {username, password}= adminData
     /////
     const admin: any = await AdminModels.findOne({ where: { username } });
 
@@ -145,27 +142,14 @@ const SigninAdmin = async (req: Request, res: Response) => {
   }
 };
 
-const UpdateAdmin = async (req: Request, res: Response) => {
+const UpdateAdmin = async (req: CustomRequest, res: Response) => {
   try {
     const file: any = req.files?.file;
-    let {
-      username,
-      lastname,
-      password,
-      newPassword,
-    }: {
-      username: string;
-      lastname: string;
-      password: string;
-      newPassword: string;
-    } = req.body;
-    const authHeader = req.headers["authorization"];
-    const access_token = authHeader && authHeader.split(" ")[1];
-
-    const chekToken: any = jwt.verify(access_token);
+    let  data: AdminRequestbody = req.body;
+    let {username, lastname, password, newPassword} = data
 
     const admin: any = await AdminModels.findAll({
-      where: { id: chekToken?.id },
+      where: { id: req.token?.id },
     });
     if (password.length < 8) {
       console.log("Not only 8 symbol");
@@ -207,7 +191,7 @@ const UpdateAdmin = async (req: Request, res: Response) => {
         avatar: name || admin[0].avatar,
         password: newPassword || admin[0].password,
       },
-      { where: { id: chekToken.id } }
+      { where: { id: req.token?.id } }
     );
     const TOKEN = jwt.sign({ username, id: updeted?.id, isAdmin: true });
     res.status(201).json({
@@ -227,7 +211,7 @@ const UpdateAdmin = async (req: Request, res: Response) => {
 
 export default {
   RegisterAdmin,
-  GetAdmin,
   SigninAdmin,
+  GetAdmin,
   UpdateAdmin,
 };

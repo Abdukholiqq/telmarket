@@ -40,7 +40,7 @@ export interface ProductBody {
 export interface Order {
   sold_count: number,
   username: string, 
-  phone_number:  number,
+  phone_number: string,
   viloyat: string,
   tuman:string,
   yetkazish_narxi: string,
@@ -48,8 +48,15 @@ export interface Order {
   manzil:string,
   moljal:string,
   description:string,
+  enum: OrderStatus ,
 }
 
+export enum OrderStatus {
+  Pending = 'pending',
+  Processing = 'processing',
+  Completed = 'completed',
+  Cancelled = 'cancelled', 
+}
 
 
 

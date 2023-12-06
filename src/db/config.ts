@@ -1,7 +1,8 @@
 import { Sequelize } from "sequelize";
+import "dotenv/config";
 
 const sequelize = new Sequelize({
-  username: "postgres",
+  username:   "postgres",
   host: "localhost",
   port: 5432,
   database: "telmarket",
@@ -9,7 +10,9 @@ const sequelize = new Sequelize({
   dialect: "postgres",
   logging: false
 });
-!(async function () {
+// console.log(DB_PORT);
+
+export const bootstrap = async ()=> {
   try {
     await sequelize.authenticate();
     await sequelize.sync({ alter: true });
@@ -17,6 +20,6 @@ const sequelize = new Sequelize({
   } catch (error: any) {
     console.log("db error, ", error.message);
   }
-})();
+};
 
 export default sequelize;

@@ -1,24 +1,18 @@
 import { Request, Response } from "express";
 import { resolve } from "path";
 import jwt from "../../../utils/jwt"; 
-import CategoryModel from "../model/category.model";
+import CategoryModel from "../model/category.model"; 
+import { JwtPayload } from "jsonwebtoken";
+interface CustomRequest extends Request {
+  token?: JwtPayload; 
+}
 
-const createCategory = async (req: Request, res: Response) => {
-  try {
-    const authHeader = req.headers['authorization'];
-    const access_token = authHeader && authHeader.split(' ')[1];
-
+const createCategory = async (req: CustomRequest, res: Response) => {
+  try { 
     const file: any = req.files?.file;
     let { category_name }: { category_name: string } = req.body;
      
-    const chekToken: any = jwt.verify(access_token);
-    if (!chekToken) {
-      return res.status(404).json({
-        status: 404,
-        message: "Token Required !!!",
-      });
-    }
-    if (!chekToken.isAdmin) {
+    if (!req.token?.isAdmin) {
       return res.status(404).json({
         status: 404,
         message: "Your Not is Admin",
@@ -89,12 +83,12 @@ const getAllCategory = async (req: Request, res: Response) => {
 const getCategoryById = async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
-    const category = await CategoryModel.findAll({
+    const category = await CategoryModel.findOne({
       where: { id },
       include: [{ all: true }],
     });
 
-    if (category.length === 0) {
+    if (!category) {
       return res.status(404).json({
         status: 404,
         message: "Category not found",
@@ -115,12 +109,12 @@ const getCategoryById = async (req: Request, res: Response) => {
 };
 const getCategoryByName = async (req: Request, res: Response) => {
   try {
-    let name = req.params.name;
-    name.toLocaleUpperCase();
+    let name = req.params.name; 
+    
     const category = await CategoryModel.findAll({
-      where: { category_name: name },
+      where: { category_name: name.toLocaleUpperCase() },
       include: [{ all: true }],
-    });
+    });   
 
     if (category.length === 0) {
       return res.status(404).json({
@@ -142,23 +136,14 @@ const getCategoryByName = async (req: Request, res: Response) => {
   }
 };
 
-const updateCategory = async (req: Request, res: Response) => {
-  try {
-    const authHeader = req.headers['authorization'];
-    const access_token = authHeader && authHeader.split(' ')[1];
-
+const updateCategory = async (req: CustomRequest, res: Response) => {
+  try { 
     const file: any = req.files?.file;
     let { category_name }: { category_name: string } = req.body;
     let id = req.params.id;
 
-    const chekToken: any = jwt.verify(access_token);
-    if (!chekToken) {
-      return res.status(404).json({
-        status: 404,
-        message: "Token Required !!!",
-      });
-    }
-    if (!chekToken.isAdmin) {
+  
+    if (!req.token?.isAdmin) {
       return res.status(404).json({
         status: 404,
         message: "Your Not is Admin",
@@ -203,20 +188,11 @@ const updateCategory = async (req: Request, res: Response) => {
   }
 };
 
-const deleteCategory = async (req: Request, res: Response) => {
+const deleteCategory = async (req: CustomRequest, res: Response) => {
   try {
     let id = req.params.id;
-        const authHeader = req.headers['authorization'];
-    const access_token = authHeader && authHeader.split(' ')[1];
-    const chekToken: any = jwt.verify(access_token);
-
-    if (!chekToken) {
-      return res.status(404).json({
-        status: 404,
-        message: "Token Required !!!",
-      });
-    }
-    if (!chekToken.isAdmin) {
+    
+    if (!req.token?.isAdmin) {
       return res.status(404).json({
         status: 404,
         message: "Your Not is Admin",

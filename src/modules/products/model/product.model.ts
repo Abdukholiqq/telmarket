@@ -25,7 +25,10 @@ class ProductModel extends Model{
       type: DataTypes.STRING,
       allowNull: false,
     },
-    count: DataTypes.INTEGER,
+    count:{
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
     nfc: {
       type: DataTypes.STRING(10),
       allowNull: false,
@@ -98,10 +101,16 @@ class ProductModel extends Model{
       type: DataTypes.TEXT,
       allowNull: false,
     },
+    show: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0
+    },
+    sold_out: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0
+      },
     MainImage: DataTypes.STRING,
-    BackImage: DataTypes.STRING,
-    LeftImage: DataTypes.STRING,
-    RightImage: DataTypes.STRING,
+    BackImage: DataTypes.STRING, 
     categoryId: DataTypes.INTEGER,
   },
   {

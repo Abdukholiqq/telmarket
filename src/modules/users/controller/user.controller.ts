@@ -4,22 +4,17 @@ import { resolve } from "path";
 import jwt from "../../../utils/jwt";
 import UserModel from "../model/user.model";
 import { UserRequestbody } from "../../types";
+import { JwtPayload } from "jsonwebtoken";
+interface CustomRequest extends Request {
+  token?: JwtPayload; 
+}
 
 // get user
-const GetUser = async (req: Request, res: Response) => {
+const GetUser = async (req: CustomRequest, res: Response) => {
   try {
-    const authHeader = req.headers["authorization"];
-    const access_token = authHeader && authHeader.split(" ")[1];
-    const chekToken: any = jwt.verify(access_token);
+     
 
-    if (!chekToken) {
-      return res.status(404).json({
-        status: 404,
-        message: "Token Required !!!",
-      });
-    }
-
-    const user: any = await UserModel.findOne({ where: { id: chekToken.id } });
+    const user: any = await UserModel.findOne({ where: { id: req.token?.id } });
     if (!user) {
       return res.status(404).json({
         status: 404,
@@ -45,8 +40,7 @@ const CreateUser = async (req: Request, res: Response) => {
   try {
     const file: any = req.files?.file;
     const userdata: UserRequestbody = req.body;
-    let { username, lastname, password } = userdata; 
-console.log(req.body);
+    let { username, lastname, password } = userdata;  
 
     const user: any = await UserModel.findAll({ where: { username } });
     console.log(user.length) , 'user';
@@ -75,8 +69,7 @@ console.log(req.body);
       lastname,
       password,
       avatar: name,
-    });
-    console.log(newUser);
+    }); 
     const TOKEN: any = jwt.sign({ username, id: newUser?.id });
 
     return res.status(201).json({
@@ -96,25 +89,13 @@ console.log(req.body);
 };
 
 // update user data
-const UpdateUser = async (req: Request, res: Response) => {
+const UpdateUser = async (req: CustomRequest, res: Response) => {
   try { 
-    const file: any = req.files?.files;
+    const file: any = req.files?.file;
     const userdata: UserRequestbody = req.body;
     let { username, lastname, password, newPassword } = userdata;
-
-    // find data
-    const authHeader = req.headers["authorization"];
-    const access_token = authHeader && authHeader.split(" ")[1];
-
-    const chekToken: any = jwt.verify(access_token);
-
-    if (!chekToken) {
-      return res.status(404).json({
-        status: 404,
-        message: "Token Required !!!",
-      });
-    }
-    if (chekToken.isAdmin) {
+    
+    if (req.token?.isAdmin) {
       return res.status(404).json({
         status: 404,
         message: "Your Not is User",
@@ -122,7 +103,7 @@ const UpdateUser = async (req: Request, res: Response) => {
     }
 
     const user: any = await UserModel.findOne({
-      where: { id: chekToken.id },
+      where: { id: req.token?.id },
     });
 
     //  chack data
@@ -168,7 +149,7 @@ const UpdateUser = async (req: Request, res: Response) => {
         password: newPassword || user.dataValues.password,
       },
       {
-        where: { id: chekToken.id },
+        where: { id: req.token?.id },
       }
     );
     // // username o'zgarishini hisobga olgan holda yangi token qaytarilyabdi
@@ -192,7 +173,7 @@ const UpdateUser = async (req: Request, res: Response) => {
 // sig in
 const SigninUser = async (req: Request, res: Response) => {
   try {
-    const userdata: UserRequestbody = req.body;
+    const userdata: UserRequestbody = req.body; 
     let { username, password } = userdata;
 
     const checkUser: any = await UserModel.findAll({

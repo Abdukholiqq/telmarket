@@ -1,27 +1,23 @@
+import { Request, Response } from "express";
 import jwt from "../../../utils/jwt";
 import CartModel from "../model/cart.model";
-import { Request, Response } from "express";
+import { JwtPayload } from "jsonwebtoken";
+interface CustomRequest extends Request {
+  token?: JwtPayload;
+}
 
-const AddCart = async (req: Request, res: Response) => {
+const AddCart = async (req: CustomRequest, res: Response) => {
   try {
-    const authHeader = req.headers['authorization'];
-    const access_token = authHeader && authHeader.split(' ')[1];
-    const productId = +req.body.id; 
-    const chekToken: any = jwt.verify(access_token);
-    if (!chekToken) {
-      return res.status(404).json({
-        status: 404,
-        message: "Token Required !!!",
-      });
-    }
+    const productId = +req.body.id;
+
     const addProduct = await CartModel.create({
-      userId: chekToken.id,
+      userId: req.token?.id,
       productId,
     });
     return res.status(201).json({
-        message: "success",
-        data: addProduct,
-      });
+      message: "success",
+      data: addProduct,
+    });
   } catch (error: any) {
     console.log(error.message);
     return res.status(500).json({
@@ -31,47 +27,47 @@ const AddCart = async (req: Request, res: Response) => {
   }
 };
 
-const allCart =async (req:Request, res:Response) => {
+const allCart = async (req: CustomRequest, res: Response) => {
   try {
-    const authHeader = req.headers['authorization'];
-    const access_token = authHeader && authHeader.split(' ')[1];
-    const productId = +req.body.id; 
-    const chekToken: any = jwt.verify(access_token);
-    if (!chekToken) {
-      return res.status(404).json({
-        status: 404,
-        message: "Token Required !!!",
-      });
-    }
-  const allCart = await CartModel.findAll({where:{userId: chekToken.id}, include: [{all:true}]})
-res.status(200).json({
-  message:'success',
-  data: allCart
-})
-  } catch (error) {
-    
+    const productId = +req.body.id;
+
+    const allCart = await CartModel.findAll({
+      where: { userId: req.token?.id },
+      include: [{ all: true }],
+    });
+    res.status(200).json({
+      message: "success",
+      data: allCart,
+    });
+  } catch (error: any) {
+    console.log(error.message);
+    return res.status(500).json({
+      status: 500,
+      message: "Internal Server Error",
+    });
   }
-}
+};
 
-const removeCart =async (req:Request, res:Response) => {
-  const authHeader = req.headers['authorization'];
-    const access_token = authHeader && authHeader.split(' ')[1];
-    const productId = +req.params.id; 
-    const chekToken: any = jwt.verify(access_token);
-    if (!chekToken) {
-      return res.status(404).json({
-        status: 404,
-        message: "Token Required !!!",
-      });
-    }
-    const removeItem = await CartModel.destroy({where:{
-      productId, userId: chekToken.id
-    }})
+const removeCart = async (req: CustomRequest, res: Response) => {
+  try {
+    const productId = +req.params.id;
+    const removeItem = await CartModel.destroy({
+      where: {
+        productId,
+        userId: req.token?.id,
+      },
+    });
     return res.status(201).json({
-      message: 'success',
-      data: removeItem
-    })
-}
-
+      message: "success",
+      data: removeItem,
+    });
+  } catch (error: any) {
+    console.log(error.message);
+    return res.status(500).json({
+      status: 500,
+      message: "Internal Server Error",
+    });
+  }
+};
 
 export default { AddCart, removeCart, allCart };

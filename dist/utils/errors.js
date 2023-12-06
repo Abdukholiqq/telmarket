@@ -1,3 +1,4 @@
+"use strict";
 // export class InternalServerError extends Error {
 //   constructor(status: any, message: string) {
 //     super();
