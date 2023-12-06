@@ -57,8 +57,10 @@ const getProductById = async (req: Request, res: Response) => {
 const search = async (req: Request, res: Response) => {
   try {
     const Products = await ProductModel.findAll();
-    if (req.query.name) {
-      let name = (req.query.name as string).toLowerCase();
+    console.log(req.params);
+    
+    if (req.params.name) {
+      let name = (req.params.name as string).toLowerCase();
       const matched = Products.filter((product) =>
         product.productName.toLowerCase().includes(name)
       );

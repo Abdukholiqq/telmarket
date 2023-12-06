@@ -4,7 +4,7 @@ import { chackTokenMiddleware } from "../../../utils/chackToken";
 
 const router = Router();
 router.get("/", productController.getAllProducts);
-router.get('/search' , productController.search)
+router.get('/search/:name' , productController.search)
 router.get("/:id", productController.getProductById);
 router.post("/", chackTokenMiddleware, productController.createProduct);
 router.patch("/:id", chackTokenMiddleware, productController.updateProduct);
