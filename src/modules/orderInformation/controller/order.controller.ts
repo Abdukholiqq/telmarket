@@ -20,11 +20,14 @@ const createOrder = async (req: CustomRequest, res: Response) => {
         message: `Do'konda faqat ${productCount?.dataValues.count} mahsulot qolgan`,
       });
     }
-    let product_price = productCount?.dataValues.price
-await ProductModel.update({sold_out: productCount?.dataValues.sold_out + data.sold_count}, {where:{id}})
+
+    await ProductModel.update(
+      { sold_out: productCount?.dataValues.sold_out + data.sold_count },
+      { where: { id } }
+    );
     const newData = await OrderModel.create({
       ...data,
-      // product_price,
+      product_price: productCount?.dataValues.price,
       userId: req.token?.id,
       productId: id,
     });

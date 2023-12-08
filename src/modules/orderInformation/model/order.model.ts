@@ -10,7 +10,7 @@ OrderModel.init(
   {
     id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
     productId: { type: DataTypes.INTEGER, allowNull: false },
-    // product_price: {type: DataTypes.INTEGER, allowNull: false},
+    product_price: {type: DataTypes.INTEGER},
     userId: { type: DataTypes.INTEGER, allowNull: false },
     sold_count: { type: DataTypes.INTEGER, defaultValue: 1 },
     phone_number: { type: DataTypes.STRING, allowNull: false },
