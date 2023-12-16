@@ -11,7 +11,11 @@ interface CustomRequest extends Request {
 const getAllProducts = async (req: Request, res: Response) => {
   try {
     //  istalgan odam  ko'ra olishi mumkin
-    const allProducs = await ProductModel.findAll();
+    const allProducs = await ProductModel.findAll({
+      attributes: {
+        exclude: ["CategoryModelId", "OrderModelId", "CartModelId"],
+      },
+    });
     return res.status(200).json({
       status: 200,
       data: allProducs,
@@ -27,19 +31,25 @@ const getAllProducts = async (req: Request, res: Response) => {
 
 const getProductById = async (req: Request, res: Response) => {
   try {
-    const id = req.params.id; 
+    const id = req.params.id;
     const chackproduct = await ProductModel.findAll({
-      where: { id },
-    }); 
+      where: { id }
+    });
     if (chackproduct.length === 0) {
       return res.status(404).json({
         status: 404,
         message: "Product not found",
       });
     }
-    await ProductModel.update({show: chackproduct[0].dataValues.show + 1},{where: {id}})
+    await ProductModel.update(
+      { show: chackproduct[0].dataValues.show + 1 },
+      { where: { id } }
+    );
     const product = await ProductModel.findAll({
       where: { id },
+      attributes: {
+        exclude: ["CategoryModelId", "OrderModelId", "CartModelId"],
+      },
     });
     return res.status(200).json({
       status: 200,
@@ -56,9 +66,10 @@ const getProductById = async (req: Request, res: Response) => {
 };
 const search = async (req: Request, res: Response) => {
   try {
-    const Products = await ProductModel.findAll();
-    console.log(req.params);
-    
+    const Products = await ProductModel.findAll({ attributes: {
+      exclude: ["CategoryModelId", "OrderModelId", "CartModelId"],
+    }});
+
     if (req.params.name) {
       let name = (req.params.name as string).toLowerCase();
       const matched = Products.filter((product) =>
@@ -107,8 +118,6 @@ const createProduct = async (req: CustomRequest, res: Response) => {
       });
     }
     let categoryId = category[0].id;
-
-    console.log(req.files, "files");
 
     const extFile = fileFront.name.replace(".", "");
     const extPattern = /(jpg|jpeg|webp|png|gif|svg)/gi.test(extFile);

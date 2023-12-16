@@ -29,8 +29,7 @@ OrderModel.init(
   { sequelize, tableName: "orders", underscored: true }
 );
 
-OrderModel.hasMany(ProductModel, { foreignKey: "id"  });
-// OrderModel.hasMany(ProductModel, { foreignKey: "product_price" }); 
+OrderModel.hasMany(ProductModel, { foreignKey: "id"  }); 
 OrderModel.hasMany(UserModel, { foreignKey: "id" });
 ProductModel.belongsTo(OrderModel);
 UserModel.belongsTo(OrderModel);

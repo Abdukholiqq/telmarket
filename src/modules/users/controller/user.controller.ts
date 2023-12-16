@@ -12,8 +12,6 @@ interface CustomRequest extends Request {
 // get user
 const GetUser = async (req: CustomRequest, res: Response) => {
   try {
-     
-
     const user: any = await UserModel.findOne({ where: { id: req.token?.id } });
     if (!user) {
       return res.status(404).json({
@@ -42,8 +40,7 @@ const CreateUser = async (req: Request, res: Response) => {
     const userdata: UserRequestbody = req.body;
     let { username, lastname, password } = userdata;  
 
-    const user: any = await UserModel.findAll({ where: { username } });
-    console.log(user.length) , 'user';
+    const user: any = await UserModel.findAll({ where: { username } }); 
 
     if (password.length < 8) {
       return new Error("Not only 8 symbol");

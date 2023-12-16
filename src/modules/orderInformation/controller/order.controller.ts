@@ -6,8 +6,7 @@ import { JwtPayload } from "jsonwebtoken";
 import { where } from "sequelize";
 interface CustomRequest extends Request {
   token?: JwtPayload;
-}
-//  console.log(OrderStatus);
+} 
 
 const createOrder = async (req: CustomRequest, res: Response) => {
   try {
