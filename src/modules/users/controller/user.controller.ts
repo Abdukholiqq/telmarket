@@ -8,7 +8,6 @@ import { JwtPayload } from "jsonwebtoken";
 interface CustomRequest extends Request {
   token?: JwtPayload; 
 }
-
 // get user
 const GetUser = async (req: CustomRequest, res: Response) => {
   try {
@@ -33,7 +32,7 @@ const GetUser = async (req: CustomRequest, res: Response) => {
   }
 };
 
-//  create user
+//  create user 
 const CreateUser = async (req: Request, res: Response) => {
   try {
     const file: any = req.files?.file;
