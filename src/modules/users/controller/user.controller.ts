@@ -1,12 +1,12 @@
 import { Request, Response } from "express";
-import bcrypt from "bcrypt";
 import { resolve } from "path";
+import bcrypt from "bcrypt";
+import { JwtPayload } from "jsonwebtoken";
 import jwt from "../../../utils/jwt";
 import UserModel from "../model/user.model";
 import { UserRequestbody } from "../../types";
-import { JwtPayload } from "jsonwebtoken";
 interface CustomRequest extends Request {
-  token?: JwtPayload; 
+  token?: JwtPayload;
 }
 // get user
 const GetUser = async (req: CustomRequest, res: Response) => {
@@ -32,14 +32,68 @@ const GetUser = async (req: CustomRequest, res: Response) => {
   }
 };
 
-//  create user 
-const CreateUser = async (req: Request, res: Response) => {
+const GetAllUsersForAdmin = async (req: CustomRequest, res: Response) => {
+  try {
+    if (!req.token?.isAdmin) {
+      return res.status(404).json({
+        status: 404,
+        message: "Your is Not Admin !!!",
+      });
+    }
+    const users: any = await UserModel.findAll();
+
+    res.status(200).json({
+      status: 200,
+      message: "success",
+      data: users,
+    });
+  } catch (error: any) {
+    console.log(error.message);
+    return res.status(500).json({
+      status: 500,
+      message: "Internal Server Error",
+    });
+  }
+};
+
+const GetUsersByIdForAdmin = async (req: CustomRequest, res: Response) => {
+  try {
+    const id = req.params.id
+    if (!req.token?.isAdmin) {
+      return res.status(404).json({
+        status: 404,
+        message: "Your is Not Admin !!!",
+      });
+    }
+    const user: any = await UserModel.findOne({where:{id}});
+  if (!user) {
+    return res.status(404).json({
+      status: 404,
+      message: "User Not Found"
+    })
+  }
+    res.status(200).json({
+      status: 200,
+      message: "success",
+      data: user,
+    });
+  } catch (error: any) {
+    console.log(error.message);
+    return res.status(500).json({
+      status: 500,
+      message: "Internal Server Error",
+    });
+  }
+};
+
+//  register user
+const RegisterUser = async (req: Request, res: Response) => {
   try {
     const file: any = req.files?.file;
     const userdata: UserRequestbody = req.body;
-    let { username, lastname, password } = userdata;  
+    let { username, lastname, password } = userdata;
 
-    const user: any = await UserModel.findAll({ where: { username } }); 
+    const user: any = await UserModel.findAll({ where: { username } });
 
     if (password.length < 8) {
       return new Error("Not only 8 symbol");
@@ -65,7 +119,7 @@ const CreateUser = async (req: Request, res: Response) => {
       lastname,
       password,
       avatar: name,
-    }); 
+    });
     const TOKEN: any = jwt.sign({ username, id: newUser?.id });
 
     return res.status(201).json({
@@ -79,18 +133,18 @@ const CreateUser = async (req: Request, res: Response) => {
     return res.status(500).json({
       status: 500,
       message: "Internal Server Error",
-      error: error
+      error: error,
     });
   }
 };
 
 // update user data
 const UpdateUser = async (req: CustomRequest, res: Response) => {
-  try { 
+  try {
     const file: any = req.files?.file;
     const userdata: UserRequestbody = req.body;
     let { username, lastname, password, newPassword } = userdata;
-    
+
     if (req.token?.isAdmin) {
       return res.status(404).json({
         status: 404,
@@ -126,7 +180,7 @@ const UpdateUser = async (req: CustomRequest, res: Response) => {
         message: "Username or Password incorrect",
       });
     }
-    // update data  
+    // update data
 
     newPassword = bcrypt.hashSync(newPassword, 10);
     if (file) {
@@ -137,7 +191,7 @@ const UpdateUser = async (req: CustomRequest, res: Response) => {
       name = Date.now() + "-" + name.replace(/\s/g, "");
       mv(resolve("src", "uploads", name));
     }
-   const users = await UserModel.update(
+    const users = await UserModel.update(
       {
         username: username || user.dataValues.username,
         lastname: lastname || user.dataValues.lastname,
@@ -169,7 +223,7 @@ const UpdateUser = async (req: CustomRequest, res: Response) => {
 // sig in
 const SigninUser = async (req: Request, res: Response) => {
   try {
-    const userdata: UserRequestbody = req.body; 
+    const userdata: UserRequestbody = req.body;
     let { username, password } = userdata;
 
     const checkUser: any = await UserModel.findAll({
@@ -181,7 +235,7 @@ const SigninUser = async (req: Request, res: Response) => {
         status: 404,
         message: "Invalid username or password",
       });
-    } 
+    }
 
     const isTrue = bcrypt.compareSync(
       password,
@@ -195,7 +249,7 @@ const SigninUser = async (req: Request, res: Response) => {
       });
     }
 
-    const user: any = await UserModel.findAll({ where: { username } })  
+    const user: any = await UserModel.findAll({ where: { username } });
 
     const TOKEN: any = jwt.sign({ username, id: user[0].dataValues.id });
     return res.status(201).json({
@@ -211,14 +265,13 @@ const SigninUser = async (req: Request, res: Response) => {
       message: "Internal Server Error",
     });
   }
-};
-
-// delete user in admin panel
-
+}; 
 
 export default {
   GetUser,
-  CreateUser,
+  GetAllUsersForAdmin,
+  GetUsersByIdForAdmin,
+  RegisterUser,
   SigninUser,
   UpdateUser,
 };

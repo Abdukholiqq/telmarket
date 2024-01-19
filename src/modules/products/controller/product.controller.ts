@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 import { resolve } from "path";
+import { JwtPayload } from "jsonwebtoken";
 import ProductModel from "../model/product.model";
 import CategoryModel from "../../category/model/category.model";
 import { ProductBody } from "../../types";
-import { JwtPayload } from "jsonwebtoken";
 interface CustomRequest extends Request {
   token?: JwtPayload;
 }

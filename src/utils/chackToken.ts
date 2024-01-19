@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-
-import jwt, { JwtPayload } from "jsonwebtoken";
-const SECRET_KEY = process.env.SECRET_KEY || "automarket";
+import  { JwtPayload } from "jsonwebtoken";
+import jwt from '../utils/jwt' 
 
 interface CustomRequest extends Request {
   token?: JwtPayload; // user xususiyati JwtPayload turida bo'ladi
@@ -18,7 +17,7 @@ export const chackTokenMiddleware = (
         ? authHeader.split(" ")[1]
         : authHeader;
 
-    const chackToken: any = jwt.verify(access_token, SECRET_KEY) as JwtPayload;
+    const chackToken: any = jwt.verify(access_token) as JwtPayload;
     req.token = chackToken;
     if (!chackToken) {
       return res.status(404).json({
