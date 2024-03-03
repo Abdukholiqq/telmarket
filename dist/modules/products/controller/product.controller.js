@@ -71,14 +71,9 @@ const getProductById = (req, res) => __awaiter(void 0, void 0, void 0, function*
 });
 const search = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-<<<<<<< HEAD
-        const Products = yield product_model_1.default.findAll();
-        console.log(req.params);
-=======
         const Products = yield product_model_1.default.findAll({ attributes: {
                 exclude: ["CategoryModelId", "OrderModelId", "CartModelId"],
             } });
->>>>>>> d3eb0f953c32be98331c533d6d0afaa3d773b4d3
         if (req.params.name) {
             let name = req.params.name.toLowerCase();
             const matched = Products.filter((product) => product.productName.toLowerCase().includes(name));
