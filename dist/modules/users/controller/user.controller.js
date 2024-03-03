@@ -12,8 +12,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const bcrypt_1 = __importDefault(require("bcrypt"));
 const path_1 = require("path");
+const bcrypt_1 = __importDefault(require("bcrypt"));
 const jwt_1 = __importDefault(require("../../../utils/jwt"));
 const user_model_1 = __importDefault(require("../model/user.model"));
 // get user
@@ -41,15 +41,69 @@ const GetUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         });
     }
 });
-//  create user
-const CreateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const GetAllUsersForAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _b;
     try {
-        const file = (_b = req.files) === null || _b === void 0 ? void 0 : _b.file;
+        if (!((_b = req.token) === null || _b === void 0 ? void 0 : _b.isAdmin)) {
+            return res.status(404).json({
+                status: 404,
+                message: "Your is Not Admin !!!",
+            });
+        }
+        const users = yield user_model_1.default.findAll();
+        res.status(200).json({
+            status: 200,
+            message: "success",
+            data: users,
+        });
+    }
+    catch (error) {
+        console.log(error.message);
+        return res.status(500).json({
+            status: 500,
+            message: "Internal Server Error",
+        });
+    }
+});
+const GetUsersByIdForAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _c;
+    try {
+        const id = req.params.id;
+        if (!((_c = req.token) === null || _c === void 0 ? void 0 : _c.isAdmin)) {
+            return res.status(404).json({
+                status: 404,
+                message: "Your is Not Admin !!!",
+            });
+        }
+        const user = yield user_model_1.default.findOne({ where: { id } });
+        if (!user) {
+            return res.status(404).json({
+                status: 404,
+                message: "User Not Found"
+            });
+        }
+        res.status(200).json({
+            status: 200,
+            message: "success",
+            data: user,
+        });
+    }
+    catch (error) {
+        console.log(error.message);
+        return res.status(500).json({
+            status: 500,
+            message: "Internal Server Error",
+        });
+    }
+});
+//  register user
+const RegisterUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _d;
+    try {
+        const file = (_d = req.files) === null || _d === void 0 ? void 0 : _d.file;
         const userdata = req.body;
         let { username, lastname, password } = userdata;
         const user = yield user_model_1.default.findAll({ where: { username } });
-        console.log(user.length), 'user';
         if (password.length < 8) {
             return new Error("Not only 8 symbol");
         }
@@ -88,25 +142,25 @@ const CreateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         return res.status(500).json({
             status: 500,
             message: "Internal Server Error",
-            error: error
+            error: error,
         });
     }
 });
 // update user data
 const UpdateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _c, _d, _e, _f;
+    var _e, _f, _g, _h;
     try {
-        const file = (_c = req.files) === null || _c === void 0 ? void 0 : _c.file;
+        const file = (_e = req.files) === null || _e === void 0 ? void 0 : _e.file;
         const userdata = req.body;
         let { username, lastname, password, newPassword } = userdata;
-        if ((_d = req.token) === null || _d === void 0 ? void 0 : _d.isAdmin) {
+        if ((_f = req.token) === null || _f === void 0 ? void 0 : _f.isAdmin) {
             return res.status(404).json({
                 status: 404,
                 message: "Your Not is User",
             });
         }
         const user = yield user_model_1.default.findOne({
-            where: { id: (_e = req.token) === null || _e === void 0 ? void 0 : _e.id },
+            where: { id: (_g = req.token) === null || _g === void 0 ? void 0 : _g.id },
         });
         //  chack data
         if (!user) {
@@ -132,7 +186,7 @@ const UpdateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
                 message: "Username or Password incorrect",
             });
         }
-        // update data  
+        // update data
         newPassword = bcrypt_1.default.hashSync(newPassword, 10);
         if (file) {
             var { name, mv } = yield file;
@@ -149,7 +203,7 @@ const UpdateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             avatar: name || user.dataValues.avatar,
             password: newPassword || user.dataValues.password,
         }, {
-            where: { id: (_f = req.token) === null || _f === void 0 ? void 0 : _f.id },
+            where: { id: (_h = req.token) === null || _h === void 0 ? void 0 : _h.id },
         });
         // // username o'zgarishini hisobga olgan holda yangi token qaytarilyabdi
         const TOKEN = jwt_1.default.sign({ username, id: user === null || user === void 0 ? void 0 : user.id });
@@ -206,10 +260,11 @@ const SigninUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         });
     }
 });
-// delete user in admin panel
 exports.default = {
     GetUser,
-    CreateUser,
+    GetAllUsersForAdmin,
+    GetUsersByIdForAdmin,
+    RegisterUser,
     SigninUser,
     UpdateUser,
 };

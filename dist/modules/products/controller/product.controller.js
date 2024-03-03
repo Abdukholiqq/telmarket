@@ -18,7 +18,11 @@ const category_model_1 = __importDefault(require("../../category/model/category.
 const getAllProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         //  istalgan odam  ko'ra olishi mumkin
-        const allProducs = yield product_model_1.default.findAll();
+        const allProducs = yield product_model_1.default.findAll({
+            attributes: {
+                exclude: ["CategoryModelId", "OrderModelId", "CartModelId"],
+            },
+        });
         return res.status(200).json({
             status: 200,
             data: allProducs,
@@ -36,7 +40,7 @@ const getProductById = (req, res) => __awaiter(void 0, void 0, void 0, function*
     try {
         const id = req.params.id;
         const chackproduct = yield product_model_1.default.findAll({
-            where: { id },
+            where: { id }
         });
         if (chackproduct.length === 0) {
             return res.status(404).json({
@@ -47,6 +51,9 @@ const getProductById = (req, res) => __awaiter(void 0, void 0, void 0, function*
         yield product_model_1.default.update({ show: chackproduct[0].dataValues.show + 1 }, { where: { id } });
         const product = yield product_model_1.default.findAll({
             where: { id },
+            attributes: {
+                exclude: ["CategoryModelId", "OrderModelId", "CartModelId"],
+            },
         });
         return res.status(200).json({
             status: 200,
@@ -64,8 +71,9 @@ const getProductById = (req, res) => __awaiter(void 0, void 0, void 0, function*
 });
 const search = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const Products = yield product_model_1.default.findAll();
-        console.log(req.params);
+        const Products = yield product_model_1.default.findAll({ attributes: {
+                exclude: ["CategoryModelId", "OrderModelId", "CartModelId"],
+            } });
         if (req.params.name) {
             let name = req.params.name.toLowerCase();
             const matched = Products.filter((product) => product.productName.toLowerCase().includes(name));
@@ -111,7 +119,6 @@ const createProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* 
             });
         }
         let categoryId = category[0].id;
-        console.log(req.files, "files");
         const extFile = fileFront.name.replace(".", "");
         const extPattern = /(jpg|jpeg|webp|png|gif|svg)/gi.test(extFile);
         if (!extPattern)

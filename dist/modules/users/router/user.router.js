@@ -8,7 +8,9 @@ const user_controller_1 = __importDefault(require("../controller/user.controller
 const chackToken_1 = require("../../../utils/chackToken");
 const router = (0, express_1.Router)();
 router.get('/', chackToken_1.chackTokenMiddleware, user_controller_1.default.GetUser);
-router.post('/register', user_controller_1.default.CreateUser);
+router.get('/all', chackToken_1.chackTokenMiddleware, user_controller_1.default.GetAllUsersForAdmin);
+router.get('/:id', chackToken_1.chackTokenMiddleware, user_controller_1.default.GetUsersByIdForAdmin);
+router.post('/register', user_controller_1.default.RegisterUser);
 router.post('/login', user_controller_1.default.SigninUser);
 router.put('/', chackToken_1.chackTokenMiddleware, user_controller_1.default.UpdateUser);
 exports.default = { router };
