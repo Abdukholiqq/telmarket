@@ -12,9 +12,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const product_model_1 = __importDefault(require("../../products/model/product.model"));
 const order_model_1 = __importDefault(require("../model/order.model"));
-//  console.log(OrderStatus);
+const product_model_1 = __importDefault(require("../../products/model/product.model"));
 const createOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     try {

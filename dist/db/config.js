@@ -9,20 +9,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.bootstrap = void 0;
 const sequelize_1 = require("sequelize");
 require("dotenv/config");
 const sequelize = new sequelize_1.Sequelize({
-    username: "postgres",
-    host: "localhost",
-    port: 5432,
-    database: "telmarket",
-    password: "20020",
+    username: process.env.DB_USERNAME,
+    host: process.env.DB_HOST,
+    port: parseInt(process.env.DB_PORT),
+    database: process.env.DB_DATABASE,
+    password: process.env.DB_PASSWORD,
     dialect: "postgres",
-    logging: false
+    logging: false,
 });
-// console.log(DB_PORT);
-const bootstrap = () => __awaiter(void 0, void 0, void 0, function* () {
+(() => __awaiter(void 0, void 0, void 0, function* () {
     try {
         yield sequelize.authenticate();
         yield sequelize.sync({ alter: true });
@@ -31,7 +29,6 @@ const bootstrap = () => __awaiter(void 0, void 0, void 0, function* () {
     catch (error) {
         console.log("db error, ", error.message);
     }
-});
-exports.bootstrap = bootstrap;
+}))();
 exports.default = sequelize;
 //# sourceMappingURL=config.js.map

@@ -4,15 +4,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.chackTokenMiddleware = void 0;
-const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const SECRET_KEY = process.env.SECRET_KEY || "automarket";
+const jwt_1 = __importDefault(require("../utils/jwt"));
 const chackTokenMiddleware = (req, res, next) => {
     try {
         const authHeader = req.headers["authorization"];
         const access_token = (authHeader === null || authHeader === void 0 ? void 0 : authHeader.split(" ").length) == 2
             ? authHeader.split(" ")[1]
             : authHeader;
-        const chackToken = jsonwebtoken_1.default.verify(access_token, SECRET_KEY);
+        const chackToken = jwt_1.default.verify(access_token);
         req.token = chackToken;
         if (!chackToken) {
             return res.status(404).json({

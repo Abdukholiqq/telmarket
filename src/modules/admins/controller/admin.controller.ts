@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
 import { resolve } from "path";
 import bcrypt from "bcrypt";
+import { JwtPayload } from "jsonwebtoken";
 import jwt from "../../../utils/jwt";
 import { AdminRequestbody } from "../../types";
 import AdminModels from "../model/admin.model";
-import { JwtPayload } from "jsonwebtoken";
 interface CustomRequest extends Request {
   token?: JwtPayload; 
 }
@@ -175,14 +175,14 @@ const UpdateAdmin = async (req: CustomRequest, res: Response) => {
 
     newPassword = bcrypt.hashSync(newPassword, 10);
 
-    if (file) {
-      var { name, mv } = await file;
-      const extFile = name.replace(".", "");
-      const extPattern = /(jpg|jpeg|png|webp|gif|svg)/gi.test(extFile);
-      if (!extPattern) throw new TypeError("Image format is not valid");
-      name = Date.now() + "-" + name.replace(/\s/g, "");
-      mv(resolve("src", "uploads", name));
-    }
+      if (file) {
+        var { name, mv } = await file;
+        const extFile = name.replace(".", "");
+        const extPattern = /(jpg|jpeg|png|webp|gif|svg)/gi.test(extFile);
+        if (!extPattern) throw new TypeError("Image format is not valid");
+        name = Date.now() + "-" + name.replace(/\s/g, "");
+        mv(resolve("src", "uploads", name));
+      }
 
     const updeted: any = await AdminModels.update(
       {
@@ -193,7 +193,7 @@ const UpdateAdmin = async (req: CustomRequest, res: Response) => {
       },
       { where: { id: req.token?.id } }
     );
-    const TOKEN = jwt.sign({ username, id: updeted?.id, isAdmin: true });
+    const TOKEN = jwt.sign({ username, id: req.token?.id, isAdmin: true });
     res.status(201).json({
       status: 201,
       message: "success",

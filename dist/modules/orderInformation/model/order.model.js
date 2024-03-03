@@ -29,7 +29,6 @@ OrderModel.init({
     },
 }, { sequelize: config_1.default, tableName: "orders", underscored: true });
 OrderModel.hasMany(product_model_1.default, { foreignKey: "id" });
-// OrderModel.hasMany(ProductModel, { foreignKey: "product_price" }); 
 OrderModel.hasMany(user_model_1.default, { foreignKey: "id" });
 product_model_1.default.belongsTo(OrderModel);
 user_model_1.default.belongsTo(OrderModel);

@@ -1,13 +1,11 @@
 import { Request, Response } from "express";
-import { Order, OrderStatus } from "../../types";
-import ProductModel from "../../products/model/product.model";
+import { JwtPayload } from "jsonwebtoken"; 
 import OrderModel from "../model/order.model";
-import { JwtPayload } from "jsonwebtoken";
-import { where } from "sequelize";
+import ProductModel from "../../products/model/product.model";
+import { Order } from "../../types";
 interface CustomRequest extends Request {
   token?: JwtPayload;
-}
-//  console.log(OrderStatus);
+} 
 
 const createOrder = async (req: CustomRequest, res: Response) => {
   try {

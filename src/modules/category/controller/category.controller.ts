@@ -1,8 +1,7 @@
 import { Request, Response } from "express";
-import { resolve } from "path";
-import jwt from "../../../utils/jwt"; 
-import CategoryModel from "../model/category.model"; 
+import { resolve } from "path";  
 import { JwtPayload } from "jsonwebtoken";
+import CategoryModel from "../model/category.model"; 
 interface CustomRequest extends Request {
   token?: JwtPayload; 
 }

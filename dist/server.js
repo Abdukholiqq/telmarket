@@ -34,22 +34,15 @@ const path_1 = require("path");
 const cors_1 = __importDefault(require("cors"));
 const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
 const swaggerDocument = __importStar(require("./swagger.json"));
-const config_1 = require("./db/config");
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
 app.use(express_1.default.static((0, path_1.resolve)("src", "uploads")));
 app.use((0, cors_1.default)());
-(0, config_1.bootstrap)();
 const PORT = process.env.SERVER_PORT;
 app.use((0, express_fileupload_1.default)({
     limits: { fileSize: 50 * 1024 * 1024 },
 }));
 app.use("/api", index_router_1.default);
-app.post('/pets', (req, res) => {
-    console.log(req, "req");
-    console.log(req.body, "pet body");
-    res.send(req.body);
-});
 app.use('/swagger', swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(swaggerDocument));
 app.listen(PORT, () => console.log(`server running  on ${PORT}, url: http://localhost:${PORT}`));
 //# sourceMappingURL=server.js.map

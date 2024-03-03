@@ -145,7 +145,7 @@ const SigninAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 const UpdateAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _c, _d, _e;
+    var _c, _d, _e, _f;
     try {
         const file = (_c = req.files) === null || _c === void 0 ? void 0 : _c.file;
         let data = req.body;
@@ -190,7 +190,7 @@ const UpdateAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             avatar: name || admin[0].avatar,
             password: newPassword || admin[0].password,
         }, { where: { id: (_e = req.token) === null || _e === void 0 ? void 0 : _e.id } });
-        const TOKEN = jwt_1.default.sign({ username, id: updeted === null || updeted === void 0 ? void 0 : updeted.id, isAdmin: true });
+        const TOKEN = jwt_1.default.sign({ username, id: (_f = req.token) === null || _f === void 0 ? void 0 : _f.id, isAdmin: true });
         res.status(201).json({
             status: 201,
             message: "success",
