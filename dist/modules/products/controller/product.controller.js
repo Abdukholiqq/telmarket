@@ -65,8 +65,9 @@ const getProductById = (req, res) => __awaiter(void 0, void 0, void 0, function*
 const search = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const Products = yield product_model_1.default.findAll();
-        if (req.query.name) {
-            let name = req.query.name.toLowerCase();
+        console.log(req.params);
+        if (req.params.name) {
+            let name = req.params.name.toLowerCase();
             const matched = Products.filter((product) => product.productName.toLowerCase().includes(name));
             return res.status(200).json({
                 message: "success",

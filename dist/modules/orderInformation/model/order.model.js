@@ -12,7 +12,7 @@ class OrderModel extends sequelize_1.Model {
 OrderModel.init({
     id: { type: sequelize_1.DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
     productId: { type: sequelize_1.DataTypes.INTEGER, allowNull: false },
-    // product_price: {type: DataTypes.INTEGER, allowNull: false},
+    product_price: { type: sequelize_1.DataTypes.INTEGER },
     userId: { type: sequelize_1.DataTypes.INTEGER, allowNull: false },
     sold_count: { type: sequelize_1.DataTypes.INTEGER, defaultValue: 1 },
     phone_number: { type: sequelize_1.DataTypes.STRING, allowNull: false },

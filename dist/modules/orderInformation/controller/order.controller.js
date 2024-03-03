@@ -27,11 +27,8 @@ const createOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                 message: `Do'konda faqat ${productCount === null || productCount === void 0 ? void 0 : productCount.dataValues.count} mahsulot qolgan`,
             });
         }
-        let product_price = productCount === null || productCount === void 0 ? void 0 : productCount.dataValues.price;
         yield product_model_1.default.update({ sold_out: (productCount === null || productCount === void 0 ? void 0 : productCount.dataValues.sold_out) + data.sold_count }, { where: { id } });
-        const newData = yield order_model_1.default.create(Object.assign(Object.assign({}, data), { 
-            // product_price,
-            userId: (_a = req.token) === null || _a === void 0 ? void 0 : _a.id, productId: id }));
+        const newData = yield order_model_1.default.create(Object.assign(Object.assign({}, data), { product_price: productCount === null || productCount === void 0 ? void 0 : productCount.dataValues.price, userId: (_a = req.token) === null || _a === void 0 ? void 0 : _a.id, productId: id }));
         return res.status(201).json({
             status: 201,
             message: "success",
